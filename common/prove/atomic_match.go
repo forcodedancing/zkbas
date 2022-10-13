@@ -51,7 +51,7 @@ func toCryptoAtomicMatchTx(txInfo *txtypes.AtomicMatchTxInfo) (info *cryptoTypes
 	if err != nil {
 		return nil, err
 	}
-	packedAmount, err := common.ToPackedAmount(txInfo.BuyOffer.AssetAmount)
+	packedAmount, err := common.ToPackedAmount(txInfo.Offer.AssetAmount)
 	if err != nil {
 		return nil, err
 	}
@@ -64,41 +64,34 @@ func toCryptoAtomicMatchTx(txInfo *txtypes.AtomicMatchTxInfo) (info *cryptoTypes
 		return nil, err
 	}
 	buySig := new(eddsa.Signature)
-	_, err = buySig.SetBytes(txInfo.BuyOffer.Sig)
+	_, err = buySig.SetBytes(txInfo.Offer.Sig)
 	if err != nil {
 		return nil, err
 	}
-	sellSig := new(eddsa.Signature)
-	_, err = sellSig.SetBytes(txInfo.SellOffer.Sig)
-	if err != nil {
-		return nil, err
-	}
+
 	info = &cryptoTypes.AtomicMatchTx{
-		AccountIndex: txInfo.AccountIndex,
-		BuyOffer: &cryptoTypes.OfferTx{
-			Type:         txInfo.BuyOffer.Type,
-			OfferId:      txInfo.BuyOffer.OfferId,
-			AccountIndex: txInfo.BuyOffer.AccountIndex,
-			NftIndex:     txInfo.BuyOffer.NftIndex,
-			AssetId:      txInfo.BuyOffer.AssetId,
+		Offer: &cryptoTypes.OfferTx{
+			Type:         txInfo.Offer.Type,
+			OfferId:      txInfo.Offer.OfferId,
+			AccountIndex: txInfo.Offer.AccountIndex,
+			NftIndex:     txInfo.Offer.NftIndex,
+			AssetId:      txInfo.Offer.AssetId,
 			AssetAmount:  packedAmount,
-			ListedAt:     txInfo.BuyOffer.ListedAt,
-			ExpiredAt:    txInfo.BuyOffer.ExpiredAt,
-			TreasuryRate: txInfo.BuyOffer.TreasuryRate,
+			ListedAt:     txInfo.Offer.ListedAt,
+			ExpiredAt:    txInfo.Offer.ExpiredAt,
+			TreasuryRate: txInfo.Offer.TreasuryRate,
 			Sig:          buySig,
 		},
-		SellOffer: &cryptoTypes.OfferTx{
-			Type:         txInfo.SellOffer.Type,
-			OfferId:      txInfo.SellOffer.OfferId,
-			AccountIndex: txInfo.SellOffer.AccountIndex,
-			NftIndex:     txInfo.SellOffer.NftIndex,
-			AssetId:      txInfo.SellOffer.AssetId,
-			AssetAmount:  packedAmount,
-			ListedAt:     txInfo.SellOffer.ListedAt,
-			ExpiredAt:    txInfo.SellOffer.ExpiredAt,
-			TreasuryRate: txInfo.SellOffer.TreasuryRate,
-			Sig:          sellSig,
-		},
+
+		Type:         txInfo.Type,
+		OfferId:      txInfo.OfferId,
+		AccountIndex: txInfo.AccountIndex,
+		NftIndex:     txInfo.NftIndex,
+		AssetId:      txInfo.AssetId,
+		AssetAmount:  packedAmount,
+		ExpiredAt:    txInfo.ExpiredAt,
+		TreasuryRate: txInfo.TreasuryRate,
+
 		CreatorAmount:     packedCreatorAmount,
 		TreasuryAmount:    packedTreasuryAmount,
 		GasAccountIndex:   txInfo.GasAccountIndex,
